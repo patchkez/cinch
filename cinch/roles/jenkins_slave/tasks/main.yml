@@ -29,12 +29,19 @@
     mode: 0755
     state: directory
 
-- name: fetch swarm download
-  get_url:
-    dest: "{{ jswarm_local_directory }}/{{ jswarm_filename }}"
-    url: "{{ jswarm_download }}"
-    owner: "{{ jenkins_user }}"
+#- name: fetch swarm download
+#  get_url:
+#    dest: "{{ jswarm_local_directory }}/{{ jswarm_filename }}"
+#    url: "{{ jswarm_download }}"
+#    owner: "{{ jenkins_user }}"
 
+- name: fetch swarm download - PK workaround
+  shell:
+    cmd: "curl {{ jswarm_download }} -L -o {{ jswarm_local_directory }}/{{ jswarm_filename }}"
+
+- name: fetch swarm download - PK workaround - change ownership of the file
+  shell:
+    cmd: "chown {{ jenkins_user }} {{ jswarm_local_directory }}/{{ jswarm_filename }}"
 
 # Inside of a Docker container, we want to be able to pull values from the container's running
 # environment. In order to do that, we need to drop values into the configurable fields that
